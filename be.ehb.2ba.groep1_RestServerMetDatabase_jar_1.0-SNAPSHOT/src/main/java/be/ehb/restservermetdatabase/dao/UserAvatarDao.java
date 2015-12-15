@@ -54,7 +54,7 @@ public class UserAvatarDao {
         return aantalAangepasteRijen;
     }
 
-    public static int verwijderFriends(int userId, int avatarId) {
+    public static int verwijderUsersAvatar(int userId, int avatarId) {
         int aantalAangepasteRijen = 0;
         try {
             aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM usersavatar WHERE user_id = ? AND avatar_id = ?", new Object[]{userId,avatarId});
