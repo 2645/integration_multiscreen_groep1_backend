@@ -18,22 +18,22 @@ import java.util.ArrayList;
  */
 public class VoorbeeldGUI extends javax.swing.JFrame {
 
-    private DefaultListModel<Friends> mijnModel;
+    private DefaultListModel<Attraction> mijnModel;
 
     /**
      * Creates new form VoorbeeldGUI
      */
     public VoorbeeldGUI() {
         initComponents();
-        mijnModel = new DefaultListModel<Friends>();
+        mijnModel = new DefaultListModel<Attraction>();
         lstAuteurs.setModel(mijnModel);
         updateList();
     }
 
     public void updateList() {
         mijnModel.clear();
-        ArrayList<Friends> list = FriendsDao.getFriends();
-        for (Friends current : list) {
+        ArrayList<Attraction> list = AttractionDao.getAttractions();
+        for (Attraction current : list) {
             mijnModel.addElement(current);;
         }
     }
