@@ -40,6 +40,21 @@ public class UserDao {
 
         return resultaat;
     }
+    public static User getUserByEmail(String mail){
+        User resultaat = null;
+        try {
+            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users where user_mail = ?", new Object[]{mail});
+            if (mijnResultset != null) {
+                mijnResultset.first();
+                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Foutafhandeling naar keuze
+        }
+
+        return resultaat;
+    }
 
     public static int voegUserToe(User nieuweUser) {
         int aantalAangepasteRijen = 0;

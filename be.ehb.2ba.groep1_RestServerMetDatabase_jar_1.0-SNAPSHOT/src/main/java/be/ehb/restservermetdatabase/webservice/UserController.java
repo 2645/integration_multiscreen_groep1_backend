@@ -16,27 +16,30 @@ import be.ehb.restservermetdatabase.model.User;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	
-	@RequestMapping(value = "/lookup", method = RequestMethod.GET)
-	public User getById(@RequestParam(value = "user_id", defaultValue = "1") int user_id) {
+
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    public User getById(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "email", defaultValue = "") String user_mail) {
+        // Aanroepen met
+        // http://localhost:8080/users/lookup?user_id=2
+        // http://localhost:8080/users/lookup?email=jan@gmail.com
+        if (user_id != 0) {
+            return UserDao.getUserById(user_id);
+        } else if(!user_mail.equals("")){
+            return UserDao.getUserByEmail(user_mail);
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public int voegToe(@RequestBody User nieuweUser) {
 		// Aanroepen met
-		// http://localhost:8080/Auteur/getById?auteurId=2
-		return UserDao.getUserById(user_id);
-	}
-	
-	@RequestMapping(value = "/voegToe", method = RequestMethod.POST)
-	public int voegToe(@RequestBody User nieuweAuteur) {
-		// Aanroepen met
-		// http://localhost:8080/Auteur/voegToe
-		// Geef parameter mee in de body: {"naam":"Smartphone","prijs":299.99}
-		// Content type van de POST request is application/json
-		// Default constructor nodig bij Auteur-klasse voor automatische omzetting van JSON naar objecten
-		
-		
-		return UserDao.voegUserToe(nieuweAuteur);
-	}
-	
-	
-	
+        // http://localhost:8080/users/create
+        // Geef parameter mee in de body
+        // Content type van de POST request is application/json
+        // Default constructor nodig bij User-klasse voor automatische omzetting van JSON naar objecten		
+
+        UserDao.voegUserToe(nieuweUser);
+        return UserDao.getUserByEmail(nieuweUser.getUser_mail()).getUser_id();
+    }
 
 }
