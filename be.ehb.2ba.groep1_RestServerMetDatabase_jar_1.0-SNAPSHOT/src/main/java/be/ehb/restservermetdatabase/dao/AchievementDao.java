@@ -63,7 +63,7 @@ public class AchievementDao {
         return aantalAangepasteRijen;
     }
 
-    public static int verwijderFriends(int achievementId) {
+    public static int verwijderAchievement(int achievementId) {
         int aantalAangepasteRijen = 0;
         try {
             aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM achievements WHERE achievement_id = ?", new Object[]{achievementId});
