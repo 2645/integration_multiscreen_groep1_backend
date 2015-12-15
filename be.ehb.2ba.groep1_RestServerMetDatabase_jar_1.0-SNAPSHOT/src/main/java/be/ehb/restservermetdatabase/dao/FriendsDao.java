@@ -55,7 +55,7 @@ public class FriendsDao {
     public static int updateFriends(Friends nieuweFriends) {
         int aantalAangepasteRijen = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE friends SET user_id1 = ?, user_id2 = ? WHERE friend_id = ?", new Object[]{nieuweFriends.getUser_id1(), nieuweFriends.getUser_id2()});
+            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE friends SET user_id1 = ?, user_id2 = ? WHERE friend_id = ?", new Object[]{nieuweFriends.getUser_id1(), nieuweFriends.getUser_id2(), nieuweFriends.getFriend_id()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze

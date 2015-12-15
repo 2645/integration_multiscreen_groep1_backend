@@ -55,7 +55,7 @@ public class UserDao {
     public static int updateUser(User nieuweUser) {
         int aantalAangepasteRijen = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE users SET user_firstname = ?, user_lastname = ?, user_mail = ?, user_password = ?, user_balance = ?, user_currentavatar_id = ? WHERE user_id = ?", new Object[]{nieuweUser.getUser_firstname(), nieuweUser.getUser_lastname(), nieuweUser.getUser_mail(), nieuweUser.getUser_password(), nieuweUser.getUser_balance(), nieuweUser.getUser_currentavatar_id()});
+            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE users SET user_firstname = ?, user_lastname = ?, user_mail = ?, user_password = ?, user_balance = ?, user_currentavatar_id = ? WHERE user_id = ?", new Object[]{nieuweUser.getUser_firstname(), nieuweUser.getUser_lastname(), nieuweUser.getUser_mail(), nieuweUser.getUser_password(), nieuweUser.getUser_balance(), nieuweUser.getUser_currentavatar_id(), nieuweUser.getUser_id()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
