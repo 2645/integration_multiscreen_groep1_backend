@@ -12,11 +12,19 @@ package be.ehb.restservermetdatabase.model;
 public class Avatar {
     public int avatar_id;
     public String avatar_name, avatar_img;
+    public int avatar_price;
 
-    public Avatar(int avatar_id, String avatar_name, String avatar_img) {
+    public Avatar(int avatar_id, String avatar_name, String avatar_img, int avatar_price) {
         this.avatar_id = avatar_id;
         this.avatar_name = avatar_name;
         this.avatar_img = avatar_img;
+        this.avatar_price = avatar_price;
+    }
+
+    public Avatar(String avatar_name, String avatar_img, int avatar_price) {
+        this.avatar_name = avatar_name;
+        this.avatar_img = avatar_img;
+        this.avatar_price = avatar_price;
     }
 
     public int getAvatar_id() {
@@ -41,5 +49,13 @@ public class Avatar {
 
     public void setAvatar_img(String avatar_img) {
         this.avatar_img = avatar_img;
+    }
+
+    public int getAvatar_price() {
+        return avatar_price;
+    }
+
+    public void setAvatar_price(int avatar_price) {
+        this.avatar_price = avatar_price;
     }
 }

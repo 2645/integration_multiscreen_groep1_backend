@@ -8,9 +8,27 @@ import be.ehb.restservermetdatabase.model.Avatar;
 public class AvatarDao {
 
     public static ArrayList<Avatar> getAvatars() {
-        ArrayList<Avatar> resultaat = new ArrayList<Avatar>();
+        ArrayList<Avatar> resultaat = new ArrayList<>();
         try {
             ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from avatars");
+            if (mijnResultset != null) {
+                while (mijnResultset.next()) {
+                    Avatar huidigeAvatar = converteerHuidigeRijNaarObject(mijnResultset);
+                    resultaat.add(huidigeAvatar);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Foutafhandeling naar keuze
+        }
+
+        return resultaat;
+    }
+    
+    public static ArrayList<Avatar> getAvatarsByUser(int user_id) {
+        ArrayList<Avatar> resultaat = new ArrayList<>();
+        try {
+            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from usersavatars WHERE user_id = ?", new Object[]{user_id});
             if (mijnResultset != null) {
                 while (mijnResultset.next()) {
                     Avatar huidigeAvatar = converteerHuidigeRijNaarObject(mijnResultset);
@@ -52,7 +70,7 @@ public class AvatarDao {
         return aantalAangepasteRijen;
     }
 
-    public static int updataAvatar(Avatar nieuweAvatar) {
+    public static int updateAvatar(Avatar nieuweAvatar) {
         int aantalAangepasteRijen = 0;
         try {
             aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE avatars SET avatar_name = ?, avatar_img = ? WHERE avatar_id = ?", new Object[]{nieuweAvatar.getAvatar_name(), nieuweAvatar.getAvatar_img(), nieuweAvatar.getAvatar_id()});
@@ -75,7 +93,7 @@ public class AvatarDao {
     }
 
     private static Avatar converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new Avatar(mijnResultset.getInt("avatar_id"), mijnResultset.getString("avatar_name"),  mijnResultset.getString("avatar_img"));
+        return new Avatar(mijnResultset.getInt("avatar_id"), mijnResultset.getString("avatar_name"),  mijnResultset.getString("avatar_img"),  mijnResultset.getInt("avatar_price"));
     }
 
 }
