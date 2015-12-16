@@ -1,0 +1,59 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package be.ehb.restservermetdatabase.webservice;
+
+import be.ehb.restservermetdatabase.dao.GameDao;
+import be.ehb.restservermetdatabase.model.Game;
+import java.util.ArrayList;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author Dieter
+ */
+
+@RestController
+@RequestMapping("/games")
+
+public class GameController {
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    public Game lookup(@RequestParam(value = "game_id", defaultValue = "0") int game_id) {
+        if (game_id == 0) {
+            return null;
+            
+        } else {
+            return GameDao.getGameById(game_id);
+        }
+    }
+    
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public ArrayList<Game> list() {
+        return GameDao.getGames();
+    }
+    
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public int create(
+            @RequestParam(value = "name", defaultValue = "") String name, 
+            @RequestParam(value = "description", defaultValue = "0") String description
+    ) {
+        
+        GameDao.voegGameToe(new Game(name, description));
+        return GameDao.getGameByName(name).getGame_id();
+    }
+    
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    public int update(
+            @RequestParam(value = "id", defaultValue = "0") int id, 
+            @RequestParam(value = "name", defaultValue = "") String name, 
+            @RequestParam(value = "description", defaultValue = "0") String description
+    ) {
+        
+        GameDao.updateGame(new Game(id, name, description));
+        return GameDao.getGameByName(name).getGame_id();
+    }
+}

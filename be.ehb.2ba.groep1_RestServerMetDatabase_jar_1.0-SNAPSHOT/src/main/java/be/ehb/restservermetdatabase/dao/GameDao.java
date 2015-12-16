@@ -40,6 +40,22 @@ public class GameDao {
 
         return resultaat;
     }
+    
+    public static Game getGameByName(String name) {
+        Game resultaat = null;
+        try {
+            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from games WHERE game_name = ?", new Object[]{name});
+            if (mijnResultset != null) {
+                mijnResultset.first();
+                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Foutafhandeling naar keuze
+        }
+
+        return resultaat;
+    }
 
     public static int voegGameToe(Game nieuweGame) {
         int aantalAangepasteRijen = 0;

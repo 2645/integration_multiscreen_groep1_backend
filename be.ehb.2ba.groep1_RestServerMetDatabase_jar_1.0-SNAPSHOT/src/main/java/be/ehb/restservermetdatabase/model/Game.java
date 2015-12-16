@@ -19,6 +19,11 @@ public class Game {
         this.game_description = game_description;
     }
 
+    public Game(String game_name, String game_description) {
+        this.game_name = game_name;
+        this.game_description = game_description;
+    }
+
     public int getGame_id() {
         return game_id;
     }

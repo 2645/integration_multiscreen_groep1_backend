@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AvatarController {
     
     @RequestMapping(value = "/lookup", method = RequestMethod.GET)
-    public Avatar lookup(@RequestParam(value = "avatar_id", defaultValue = "") int avatar_id) {
+    public Avatar lookup(@RequestParam(value = "avatar_id", defaultValue = "0") int avatar_id) {
         if (avatar_id == 0) {
             return null;
             
