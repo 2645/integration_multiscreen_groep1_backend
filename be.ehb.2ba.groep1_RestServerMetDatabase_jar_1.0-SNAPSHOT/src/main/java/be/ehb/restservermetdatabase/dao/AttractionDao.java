@@ -51,6 +51,22 @@ public class AttractionDao {
         }
         return aantalAangepasteRijen;
     }
+    
+    public static Attraction getAttractionByName(String name){
+    Attraction resultaat = null;
+        try {
+            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from attractions where attraction_name = ?", new Object[]{name});
+            if (mijnResultset != null) {
+                mijnResultset.first();
+                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Foutafhandeling naar keuze
+        }
+
+        return resultaat;
+    }
 
     public static int updateAttraction(Attraction nieuweAttraction) {
         int aantalAangepasteRijen = 0;
@@ -72,6 +88,44 @@ public class AttractionDao {
             // Foutafhandeling naar keuze
         }
         return aantalAangepasteRijen;
+    }
+    
+    public static int queuetimeById(int id){
+        int resultaat = 0;
+        try {
+            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT attraction_queuetime from attractions where attraction_id = ?", new Object[]{id});
+            if (mijnResultset != null) {
+                mijnResultset.first();
+                resultaat = mijnResultset.getInt("attraction_queuetime");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Foutafhandeling naar keuze
+        }
+
+        return resultaat;
+    }
+    
+    public static void updateQueueTime(int id, int time){
+        Attraction a = AttractionDao.getAttractionById(id);
+        a.setAttraction_queuetime(time);
+        AttractionDao.updateAttraction(a);
+    }
+    
+    public static ArrayList<Integer> queuetime(){
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        try {
+            ResultSet results = Database.voerSqlUitEnHaalResultaatOp("SELECT attraction_queuetime from users");
+            if (results != null) {
+                while (results.next()) {                    
+                    result.add(results.getInt("attraction_queuetime"));
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println(result);
+        return result;
     }
 
     private static Attraction converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {

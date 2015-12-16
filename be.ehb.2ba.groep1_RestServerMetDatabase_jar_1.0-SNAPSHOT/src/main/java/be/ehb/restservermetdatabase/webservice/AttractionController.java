@@ -20,8 +20,44 @@ public class AttractionController {
      @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ArrayList<Attraction> getAttractions() {
         // Aanroepen met
-        // http://localhost:8080/users/lookup?user_id=2
-        // http://localhost:8080/users/lookup?email=jan@gmail.com
+        // http://localhost:8080/attractions/list
         return AttractionDao.getAttractions();
+    }
+    
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    public Attraction getAttractionById(@RequestParam(value = "attraction_id", defaultValue = "0") int attraction_id){
+        // http://localhost:8080/attractions/lookup?attraction_id=5
+        return AttractionDao.getAttractionById(attraction_id);
+    }
+    
+    @RequestMapping(value= "/create", method = RequestMethod.POST)
+    public int createAttraction(@RequestBody Attraction nieuweAttraction){
+        AttractionDao.voegAttractionToe(nieuweAttraction);
+        return AttractionDao.getAttractionByName(nieuweAttraction.getAttraction_name()).getAttraction_id();
+    }
+    
+    @RequestMapping(value="/update", method= RequestMethod.POST)
+    public Attraction update (@RequestBody Attraction nieuweAttraction){
+        AttractionDao.updateAttraction(nieuweAttraction);
+        return AttractionDao.getAttractionByName(nieuweAttraction.getAttraction_name());
+    }
+    @RequestMapping (value="/queue", method= RequestMethod.GET)
+    public ArrayList<Attraction> queuetime(@RequestParam(value="attraction_id", defaultValue="0") int attraction_id){
+        // http://localhost:8080/attractions/queue?attraction_id=5
+        
+        ArrayList<Attraction> result = new ArrayList<Attraction>();
+        if(attraction_id > 0){
+            result.add(AttractionDao.getAttractionById(attraction_id));
+        } else {
+            result =  AttractionDao.getAttractions();
+        }
+        return result;
+    } 
+    
+    @RequestMapping (value="/updatequeue", method = RequestMethod.GET)
+    public void updateQueuetime (@RequestParam(value="attraction_id", defaultValue="0") int attraction_id, @RequestParam(value="attraction_queuetime") int attraction_queuetime ){
+         // http://localhost:8080/attractions/updatequeue?attraction_id=5&attraction_queuetime=500
+        AttractionDao.updateQueueTime(attraction_id, attraction_queuetime);
+        
     }
 }
