@@ -1,5 +1,6 @@
 package be.ehb.restservermetdatabase.dao;
 
+import be.ehb.restservermetdatabase.model.Achievement;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -63,6 +64,24 @@ public class UserAchievementDao {
             // Foutafhandeling naar keuze
         }
         return aantalAangepasteRijen;
+    }
+    
+    public static ArrayList<Achievement> getPersonalAchievements(int userId) {
+        ArrayList<Achievement> result = new ArrayList<Achievement>();
+        String sqlQuerry = "SELECT * from achievements a join usersachievements u on a.achievement_id = u.achievement_id where user_id = ?";
+        try {
+            ResultSet results = Database.voerSqlUitEnHaalResultaatOp(sqlQuerry, new Object[]{userId});
+            if (results != null) {
+                while (results.next()) {
+                    Achievement current = AchievementDao.converteerHuidigeRijNaarObject(results);
+                    result.add(current);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Foutafhandeling naar keuze
+        }
+        return result;
     }
 
     private static UsersAchievement converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {

@@ -74,7 +74,7 @@ public class AchievementDao {
         return aantalAangepasteRijen;
     }
 
-    private static Achievement converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
+    static Achievement converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
         return new Achievement(mijnResultset.getInt("achievement_id"), mijnResultset.getInt("achievement_list_order"), mijnResultset.getString("achievement_google_id"), mijnResultset.getString("achievement_name"), mijnResultset.getString("achievement_description"), mijnResultset.getString("achievement_icon"));
     }
 
