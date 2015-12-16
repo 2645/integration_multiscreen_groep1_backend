@@ -24,7 +24,7 @@ public class UserController {
         // http://localhost:8080/users/lookup?email=jan@gmail.com
         if (user_id != 0) {
             return UserDao.getUserById(user_id);
-        } else if(!user_mail.equals("")){
+        } else if (!user_mail.equals("")) {
             return UserDao.getUserByEmail(user_mail);
         }
         return null;
@@ -32,7 +32,7 @@ public class UserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public int voegToe(@RequestBody User nieuweUser) {
-		// Aanroepen met
+        // Aanroepen met
         // http://localhost:8080/users/create
         // Geef parameter mee in de body
         // Content type van de POST request is application/json
@@ -40,6 +40,30 @@ public class UserController {
 
         UserDao.voegUserToe(nieuweUser);
         return UserDao.getUserByEmail(nieuweUser.getUser_mail()).getUser_id();
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ArrayList<User> search(@RequestParam(value = "firstname", defaultValue = "") String fname, @RequestParam(value = "lastname", defaultValue = "") String lname) {
+        // Aanroepen met
+        // http://localhost:8080/users/search?firstname=Dieter
+        // http://localhost:8080/users/lookup?lastname=Holvoet
+        // http://localhost:8080/users/lookup?firstname=Dieter&lastname=Holvoet
+
+        ArrayList<User> user = null;
+        if (fname.length() != 0 && lname.length() != 0) {
+            user = UserDao.getUsersByFirstAndLastname(fname, lname);
+        } else if (fname.length() != 0) {
+            user = UserDao.getUsersByFirstname(fname);
+        } else if (lname.length() != 0) {
+            user = UserDao.getUsersByLastname(lname);
+        }
+        return user;
+    }
+    
+    @RequestMapping(value="/update", method= RequestMethod.POST)
+    public User update (@RequestBody User nieuweUser){
+        UserDao.updateUser(nieuweUser);
+        return UserDao.getUserByEmail(nieuweUser.getUser_mail());
     }
 
 }

@@ -10,11 +10,12 @@ package be.ehb.restservermetdatabase.model;
  * @author janhd
  */
 public class User {
+
     public int user_id, user_balance, user_currentavatar_id;
     public String user_firstname, user_lastname, user_mail, user_password;
-    
-    public User(){
-    
+
+    public User() {
+
     }
 
     public User(int user_id, int user_balance, int user_currentavatar_id, String user_firstname, String user_lastname, String user_mail, String user_password) {
@@ -81,5 +82,9 @@ public class User {
 
     public void setUser_password(String user_password) {
         this.user_password = user_password;
+    }
+
+    public String toString() {
+        return this.user_firstname + " " + this.user_lastname;
     }
 }
