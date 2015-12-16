@@ -38,7 +38,7 @@ public class FriendshipController {
         return FriendshipDao.getFriends(user_id);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
     public int create(
             @RequestParam(value = "from_id", defaultValue = "0") int from_id, 
             @RequestParam(value = "from_email", defaultValue = "") String from_mail,
@@ -67,7 +67,7 @@ public class FriendshipController {
         return FriendshipDao.voegFriendshipToe(new Friendship(from_id, to_id));
     }
 
-    @RequestMapping(value = "/destroy", method = RequestMethod.POST)
+    @RequestMapping(value = "/destroy", method = RequestMethod.GET)
     public int destroy(
             @RequestParam(value = "from_id", defaultValue = "0") int from_id, 
             @RequestParam(value = "from_email", defaultValue = "") String from_mail,
