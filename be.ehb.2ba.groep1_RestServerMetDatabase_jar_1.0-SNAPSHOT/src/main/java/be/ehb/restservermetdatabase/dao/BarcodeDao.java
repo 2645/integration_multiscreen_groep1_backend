@@ -52,7 +52,7 @@ public class BarcodeDao {
         return aantalAangepasteRijen;
     }
 
-    public static int updateScore(Barcode nieuweBarcode) {
+    public static int updateBarcode(Barcode nieuweBarcode) {
         int aantalAangepasteRijen = 0;
         try {
             aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE barcodes SET barcode_rawdata = ?, user_id = ?, barcode_date = ? where barcode_id = ?", new Object[]{nieuweBarcode.getBarcode_rawdata(), nieuweBarcode.getUser_id(), nieuweBarcode.getBarcode_date(), nieuweBarcode.getBarcode_id()});
@@ -75,7 +75,7 @@ public class BarcodeDao {
     }
 
     private static Barcode converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new Barcode(mijnResultset.getInt("barcode_id"), mijnResultset.getInt("user_id"),mijnResultset.getString("barcode_rawdata"), mijnResultset.getDate("barcode_date"));
+        return new Barcode(mijnResultset.getInt("barcode_id"), mijnResultset.getInt("user_id"), mijnResultset.getString("barcode_rawdata"), mijnResultset.getDate("barcode_date"));
     }
 
 }

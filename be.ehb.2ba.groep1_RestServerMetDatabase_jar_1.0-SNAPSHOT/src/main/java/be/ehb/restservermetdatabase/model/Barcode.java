@@ -15,6 +15,10 @@ public class Barcode {
     public int barcode_id, user_id;
     public String barcode_rawdata;
     public java.sql.Date barcode_date;
+    
+    public Barcode(){
+        
+    }
 
     public Barcode(int barcode_id, int user_id, String barcode_rawdata, Date barcode_date) {
         this.barcode_id = barcode_id;
