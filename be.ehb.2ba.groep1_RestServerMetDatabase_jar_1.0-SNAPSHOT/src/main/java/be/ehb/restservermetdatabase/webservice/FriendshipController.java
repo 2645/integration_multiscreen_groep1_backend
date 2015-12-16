@@ -9,6 +9,7 @@ import be.ehb.restservermetdatabase.dao.FriendshipDao;
 import be.ehb.restservermetdatabase.dao.UserDao;
 import be.ehb.restservermetdatabase.model.Friendship;
 import be.ehb.restservermetdatabase.model.User;
+import java.util.ArrayList;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,23 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/friendships")
 public class FriendshipController {
 
     @RequestMapping(value = "/lookup", method = RequestMethod.GET)
-    public User lookup(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "email", defaultValue = "") String user_mail) {
-        // Aanroepen met
-        // http://localhost:8080/users/lookup?user_id=2
-        // http://localhost:8080/users/lookup?email=jan@gmail.com
-        
-        if (user_id != 0) {
-            return UserDao.getUserById(user_id);
-            
-        } else if(!user_mail.equals("")){
-            return UserDao.getUserByEmail(user_mail);
+    public ArrayList<User> lookup(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "email", defaultValue = "") String user_mail) {
+
+        if (user_id == 0) {
+            if(user_mail.equals("")) {
+                return null;
+                
+            } else {
+                user_id = UserDao.getUserByEmail(user_mail).getUser_id();
+            }
         }
         
-        return null;
+        return FriendshipDao.getFriends(user_id);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)

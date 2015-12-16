@@ -4,17 +4,26 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import be.ehb.restservermetdatabase.model.Friendship;
+import be.ehb.restservermetdatabase.model.User;
 
 public class FriendshipDao {
 
-    public static ArrayList<Friendship> getFriendship() {
-        ArrayList<Friendship> resultaat = new ArrayList<Friendship>();
+    public static ArrayList<User> getFriends(int id) {
+        ArrayList<User> resultaat = new ArrayList<>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from friends");
+            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from friends WHERE friend_user_id1 = ? OR friend_user_id2 = ?", new Object[]{id, id});
             if (mijnResultset != null) {
                 while (mijnResultset.next()) {
                     Friendship huidigeFriendship = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeFriendship);
+                    int friendID = 0;
+                    
+                    if(huidigeFriendship.getFrom_id() == id) {
+                        friendID = huidigeFriendship.getTo_id();
+                        
+                    } else if(huidigeFriendship.getFrom_id() == id) {
+                        friendID = huidigeFriendship.getTo_id();
+                    }
+                    resultaat.add(UserDao.getUserById(friendID));
                 }
             }
         } catch (SQLException ex) {
