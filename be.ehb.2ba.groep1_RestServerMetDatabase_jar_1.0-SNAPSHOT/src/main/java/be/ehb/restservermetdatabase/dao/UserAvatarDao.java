@@ -30,7 +30,7 @@ public class UserAvatarDao {
             ResultSet results = Database.execSqlAndReturn("SELECT * from usersavatar where user_id = ?", new Object[]{id});
             if (results != null) {
                 while (results.next()) {
-                    UserAvatar current = converteerHuidigeRijNaarObject(results);
+                    UserAvatar current = convertRowToObject(results);
                     result.add(current);
                 }
             }
@@ -52,19 +52,19 @@ public class UserAvatarDao {
         return changedRows;
     }
 
-    public static int verwijderUsersAvatar(int userId, int avatarId) {
-        int aantalAangepasteRijen = 0;
+    public static int deleteUserAvatar(int userId, int avatarId) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM usersavatar WHERE user_id = ? AND avatar_id = ?", new Object[]{userId,avatarId});
+            changedRows = Database.execSqlAndReturnChangedRows("DELETE FROM usersavatar WHERE user_id = ? AND avatar_id = ?", new Object[]{userId,avatarId});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    private static UserAvatar converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new UserAvatar(mijnResultset.getInt("user_id"), mijnResultset.getInt("avatar_id"));
+    private static UserAvatar convertRowToObject(ResultSet row) throws SQLException {
+        return new UserAvatar(row.getInt("user_id"), row.getInt("avatar_id"));
     }
 
 }
