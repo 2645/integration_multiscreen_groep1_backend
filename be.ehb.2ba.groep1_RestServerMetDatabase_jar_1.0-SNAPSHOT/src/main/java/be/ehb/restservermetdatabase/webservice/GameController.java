@@ -8,10 +8,13 @@ package be.ehb.restservermetdatabase.webservice;
 import be.ehb.restservermetdatabase.dao.GameDao;
 import be.ehb.restservermetdatabase.model.Game;
 import java.util.ArrayList;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 /**
  * @author Dieter
@@ -21,7 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/games")
 
 public class GameController {
-    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    
+    @ControllerAdvice
+    static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+        public JsonpAdvice() {
+            super("callback");
+        }
+    }
+    
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Game lookup(@RequestParam(value = "game_id", defaultValue = "0") int game_id) {
         if (game_id == 0) {
             return null;
@@ -31,12 +42,12 @@ public class GameController {
         }
     }
     
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Game> list() {
         return GameDao.getGames();
     }
     
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
             @RequestParam(value = "name", defaultValue = "") String name, 
             @RequestParam(value = "description", defaultValue = "0") String description
@@ -46,7 +57,7 @@ public class GameController {
         return GameDao.getGameByName(name).getGame_id();
     }
     
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int update(
             @RequestParam(value = "id", defaultValue = "0") int id, 
             @RequestParam(value = "name", defaultValue = "") String name, 

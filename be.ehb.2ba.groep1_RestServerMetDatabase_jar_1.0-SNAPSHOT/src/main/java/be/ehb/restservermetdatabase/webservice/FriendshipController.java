@@ -10,10 +10,13 @@ import be.ehb.restservermetdatabase.dao.UserDao;
 import be.ehb.restservermetdatabase.model.Friendship;
 import be.ehb.restservermetdatabase.model.User;
 import java.util.ArrayList;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 /**
  * @author Dieter
@@ -22,8 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/friendships")
 public class FriendshipController {
+    
+    @ControllerAdvice
+    static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+        public JsonpAdvice() {
+            super("callback");
+        }
+    }
 
-    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<User> lookup(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "email", defaultValue = "") String user_mail) {
 
         if (user_id == 0) {
@@ -38,7 +48,7 @@ public class FriendshipController {
         return FriendshipDao.getFriends(user_id);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
             @RequestParam(value = "from_id", defaultValue = "0") int from_id, 
             @RequestParam(value = "from_email", defaultValue = "") String from_mail,
@@ -67,7 +77,7 @@ public class FriendshipController {
         return FriendshipDao.voegFriendshipToe(new Friendship(from_id, to_id));
     }
 
-    @RequestMapping(value = "/destroy", method = RequestMethod.GET)
+    @RequestMapping(value = "/destroy", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int destroy(
             @RequestParam(value = "from_id", defaultValue = "0") int from_id, 
             @RequestParam(value = "from_email", defaultValue = "") String from_mail,

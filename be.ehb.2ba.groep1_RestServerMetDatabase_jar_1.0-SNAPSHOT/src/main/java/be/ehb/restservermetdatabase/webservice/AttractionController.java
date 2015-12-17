@@ -1,9 +1,6 @@
 package be.ehb.restservermetdatabase.webservice;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,36 +9,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 import be.ehb.restservermetdatabase.dao.AttractionDao;
 import be.ehb.restservermetdatabase.model.Attraction;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 @RestController
 @RequestMapping("/attractions")
 public class AttractionController {
-
-     @RequestMapping(value = "/list", method = RequestMethod.GET)
+    
+    @ControllerAdvice
+    static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+        public JsonpAdvice() {
+            super("callback");
+        }
+    }
+    
+    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Attraction> getAttractions() {
         // Aanroepen met
         // http://localhost:8080/attractions/list
         return AttractionDao.getAttractions();
     }
     
-    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Attraction getAttractionById(@RequestParam(value = "attraction_id", defaultValue = "0") int attraction_id){
         // http://localhost:8080/attractions/lookup?attraction_id=5
         return AttractionDao.getAttractionById(attraction_id);
     }
     
-    @RequestMapping(value= "/create", method = RequestMethod.POST)
+    @RequestMapping(value= "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int createAttraction(@RequestBody Attraction nieuweAttraction){
         AttractionDao.voegAttractionToe(nieuweAttraction);
         return AttractionDao.getAttractionByName(nieuweAttraction.getAttraction_name()).getAttraction_id();
     }
     
-    @RequestMapping(value="/update", method= RequestMethod.POST)
+    @RequestMapping(value="/update", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Attraction update (@RequestBody Attraction nieuweAttraction){
         AttractionDao.updateAttraction(nieuweAttraction);
         return AttractionDao.getAttractionByName(nieuweAttraction.getAttraction_name());
     }
-    @RequestMapping (value="/queue", method= RequestMethod.GET)
+    
+    @RequestMapping (value="/queue", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Attraction> queuetime(@RequestParam(value="attraction_id", defaultValue="0") int attraction_id){
         // http://localhost:8080/attractions/queue?attraction_id=5
         
@@ -54,7 +62,7 @@ public class AttractionController {
         return result;
     } 
     
-    @RequestMapping (value="/updatequeue", method = RequestMethod.GET)
+    @RequestMapping (value="/updatequeue", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateQueuetime (@RequestParam(value="attraction_id", defaultValue="0") int attraction_id, @RequestParam(value="attraction_queuetime") int attraction_queuetime ){
          // http://localhost:8080/attractions/updatequeue?attraction_id=5&attraction_queuetime=500
         AttractionDao.updateQueueTime(attraction_id, attraction_queuetime);

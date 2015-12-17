@@ -9,10 +9,13 @@ import be.ehb.restservermetdatabase.dao.AvatarDao;
 import be.ehb.restservermetdatabase.dao.UserDao;
 import be.ehb.restservermetdatabase.model.Avatar;
 import java.util.ArrayList;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 /**
  * @author Dieter
@@ -23,7 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class AvatarController {
     
-    @RequestMapping(value = "/lookup", method = RequestMethod.GET)
+    @ControllerAdvice
+    static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+        public JsonpAdvice() {
+            super("callback");
+        }
+    }
+    
+    @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Avatar lookup(@RequestParam(value = "avatar_id", defaultValue = "0") int avatar_id) {
         if (avatar_id == 0) {
             return null;
@@ -33,7 +43,7 @@ public class AvatarController {
         }
     }
     
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Avatar> list(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "user_mail", defaultValue = "") String user_mail) {
         if (user_id == 0 && user_mail.equals("")) {
             return AvatarDao.getAvatars();
@@ -46,7 +56,7 @@ public class AvatarController {
         }
     }
     
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
             @RequestParam(value = "name", defaultValue = "") String name, 
             @RequestParam(value = "price", defaultValue = "0") int price, 
@@ -57,7 +67,7 @@ public class AvatarController {
         return AvatarDao.getAvatarByName(name).getAvatar_id();
     }
     
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int update(
             @RequestParam(value = "id", defaultValue = "0") int id, 
             @RequestParam(value = "name", defaultValue = "") String name, 
