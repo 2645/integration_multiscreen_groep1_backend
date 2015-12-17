@@ -37,7 +37,7 @@ public class BarcodeController {
     public void create(@RequestBody Barcode b) {
         // Aanroepen met
         // http://localhost:8080/barcode/lookup?bacode_id=2
-        BarcodeDao.voegBarcodeToe(b);
+        BarcodeDao.addBarcode(b);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

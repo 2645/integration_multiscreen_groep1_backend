@@ -39,20 +39,19 @@ public class AttractionController {
     
     @RequestMapping(value= "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int createAttraction(@RequestBody Attraction nieuweAttraction){
-        AttractionDao.voegAttractionToe(nieuweAttraction);
-        return AttractionDao.getAttractionByName(nieuweAttraction.getAttraction_name()).getAttraction_id();
+        AttractionDao.addAttraction(nieuweAttraction);
+        return AttractionDao.getAttractionByName(nieuweAttraction.getName()).getId();
     }
     
     @RequestMapping(value="/update", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Attraction update (@RequestBody Attraction nieuweAttraction){
         AttractionDao.updateAttraction(nieuweAttraction);
-        return AttractionDao.getAttractionByName(nieuweAttraction.getAttraction_name());
+        return AttractionDao.getAttractionByName(nieuweAttraction.getName());
     }
     
     @RequestMapping (value="/queue", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Attraction> queuetime(@RequestParam(value="attraction_id", defaultValue="0") int attraction_id){
-        // http://localhost:8080/attractions/queue?attraction_id=5
-        
+        // http://localhost:8080/attractions/queue?attraction_id=5        
         ArrayList<Attraction> result = new ArrayList<Attraction>();
         if(attraction_id > 0){
             result.add(AttractionDao.getAttractionById(attraction_id));
@@ -65,7 +64,6 @@ public class AttractionController {
     @RequestMapping (value="/updatequeue", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateQueuetime (@RequestParam(value="attraction_id", defaultValue="0") int attraction_id, @RequestParam(value="attraction_queuetime") int attraction_queuetime ){
          // http://localhost:8080/attractions/updatequeue?attraction_id=5&attraction_queuetime=500
-        AttractionDao.updateQueueTime(attraction_id, attraction_queuetime);
-        
+        AttractionDao.updateQueueTime(attraction_id, attraction_queuetime);        
     }
 }

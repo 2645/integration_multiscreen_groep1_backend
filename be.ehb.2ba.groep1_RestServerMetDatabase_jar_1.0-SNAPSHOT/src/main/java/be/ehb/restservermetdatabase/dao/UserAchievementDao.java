@@ -8,7 +8,7 @@ import be.ehb.restservermetdatabase.model.UserAchievement;
 
 public class UserAchievementDao {
 
-    public static ArrayList<UserAchievement> getUsersAchievements() {
+    public static ArrayList<UserAchievement> getUserAchievements() {
         ArrayList<UserAchievement> result = new ArrayList<UserAchievement>();
         try {
             ResultSet results = Database.execSqlAndReturn("SELECT * from usersachievements");
@@ -25,7 +25,7 @@ public class UserAchievementDao {
         return result;
     }
 
-    public static ArrayList<UserAchievement> getUsersAchievementsById(int id) {
+    public static ArrayList<UserAchievement> getUserAchievementsById(int id) {
         ArrayList<UserAchievement> result = new ArrayList<UserAchievement>();
         try {
             ResultSet results = Database.execSqlAndReturn("SELECT * from usersachievements where user_id = ?", new Object[]{id});

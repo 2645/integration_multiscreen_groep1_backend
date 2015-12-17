@@ -45,8 +45,8 @@ public class UserController {
         // Content type van de POST request is application/json
         // Default constructor nodig bij User-klasse voor automatische omzetting van JSON naar objecten		
 
-        UserDao.voegUserToe(nieuweUser);
-        return UserDao.getUserByEmail(nieuweUser.getUser_mail()).getUser_id();
+        UserDao.addUser(nieuweUser);
+        return UserDao.getUserByEmail(nieuweUser.getMail()).getId();
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +55,6 @@ public class UserController {
         // http://localhost:8080/users/search?firstname=Dieter
         // http://localhost:8080/users/lookup?lastname=Holvoet
         // http://localhost:8080/users/lookup?firstname=Dieter&lastname=Holvoet
-
         ArrayList<User> user = null;
         if (fname.length() != 0 && lname.length() != 0) {
             user = UserDao.getUsersByFirstAndLastname(fname, lname);
@@ -70,7 +69,7 @@ public class UserController {
     @RequestMapping(value="/update", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public User update (@RequestBody User nieuweUser){
         UserDao.updateUser(nieuweUser);
-        return UserDao.getUserByEmail(nieuweUser.getUser_mail());
+        return UserDao.getUserByEmail(nieuweUser.getMail());
     }
 
 }

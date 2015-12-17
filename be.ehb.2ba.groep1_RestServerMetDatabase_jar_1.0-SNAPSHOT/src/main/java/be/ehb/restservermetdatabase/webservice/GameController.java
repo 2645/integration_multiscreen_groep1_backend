@@ -19,52 +19,49 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpRespon
 /**
  * @author Dieter
  */
-
 @RestController
 @RequestMapping("/games")
 
 public class GameController {
-    
+
     @ControllerAdvice
     static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+
         public JsonpAdvice() {
             super("callback");
         }
     }
-    
+
     @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Game lookup(@RequestParam(value = "game_id", defaultValue = "0") int game_id) {
         if (game_id == 0) {
             return null;
-            
         } else {
             return GameDao.getGameById(game_id);
         }
     }
-    
+
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Game> list() {
         return GameDao.getGames();
     }
-    
+
     @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
-            @RequestParam(value = "name", defaultValue = "") String name, 
+            @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "description", defaultValue = "0") String description
     ) {
-        
-        GameDao.voegGameToe(new Game(name, description));
-        return GameDao.getGameByName(name).getGame_id();
+        GameDao.addGame(new Game(0, name, description));
+        return GameDao.getGameByName(name).getId();
     }
-    
+
     @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int update(
-            @RequestParam(value = "id", defaultValue = "0") int id, 
-            @RequestParam(value = "name", defaultValue = "") String name, 
+            @RequestParam(value = "id", defaultValue = "0") int id,
+            @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "description", defaultValue = "0") String description
     ) {
-        
         GameDao.updateGame(new Game(id, name, description));
-        return GameDao.getGameByName(name).getGame_id();
+        return GameDao.getGameByName(name).getId();
     }
 }

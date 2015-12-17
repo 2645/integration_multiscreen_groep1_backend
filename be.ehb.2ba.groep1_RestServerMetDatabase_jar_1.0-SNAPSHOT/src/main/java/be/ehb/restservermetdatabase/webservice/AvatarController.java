@@ -36,8 +36,7 @@ public class AvatarController {
     @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Avatar lookup(@RequestParam(value = "avatar_id", defaultValue = "0") int avatar_id) {
         if (avatar_id == 0) {
-            return null;
-            
+            return null;            
         } else {
             return AvatarDao.getAvatarById(avatar_id);
         }
@@ -46,11 +45,10 @@ public class AvatarController {
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Avatar> list(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "user_mail", defaultValue = "") String user_mail) {
         if (user_id == 0 && user_mail.equals("")) {
-            return AvatarDao.getAvatars();
-            
+            return AvatarDao.getAvatars();            
         } else {
             if(!user_mail.equals("")) {
-                user_id = UserDao.getUserByEmail(user_mail).getUser_id();
+                user_id = UserDao.getUserByEmail(user_mail).getId();
             }
             return AvatarDao.getAvatarsByUser(user_id);
         }
@@ -61,10 +59,9 @@ public class AvatarController {
             @RequestParam(value = "name", defaultValue = "") String name, 
             @RequestParam(value = "price", defaultValue = "0") int price, 
             @RequestParam(value = "img", defaultValue = "") String img
-    ) {
-        
-        AvatarDao.voegAvatarToe(new Avatar(name, img, price));
-        return AvatarDao.getAvatarByName(name).getAvatar_id();
+    ) {        
+        AvatarDao.addAvatar(new Avatar(0, price, name, img));
+        return AvatarDao.getAvatarByName(name).getId();
     }
     
     @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,9 +70,8 @@ public class AvatarController {
             @RequestParam(value = "name", defaultValue = "") String name, 
             @RequestParam(value = "price", defaultValue = "0") int price, 
             @RequestParam(value = "img", defaultValue = "") String img
-    ) {
-        
-        AvatarDao.updateAvatar(new Avatar(id, name, img, price));
-        return AvatarDao.getAvatarByName(name).getAvatar_id();
+    ) {        
+        AvatarDao.updateAvatar(new Avatar(id,price, name, img));
+        return AvatarDao.getAvatarByName(name).getId();
     }
 }
