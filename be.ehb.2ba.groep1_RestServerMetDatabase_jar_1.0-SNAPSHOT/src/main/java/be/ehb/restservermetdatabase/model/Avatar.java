@@ -10,52 +10,49 @@ package be.ehb.restservermetdatabase.model;
  * @author janhd
  */
 public class Avatar {
-    public int avatar_id;
-    public String avatar_name, avatar_img;
-    public int avatar_price;
-
-    public Avatar(int avatar_id, String avatar_name, String avatar_img, int avatar_price) {
-        this.avatar_id = avatar_id;
-        this.avatar_name = avatar_name;
-        this.avatar_img = avatar_img;
-        this.avatar_price = avatar_price;
+    private int id, price;
+    private String name, img;
+    
+    public Avatar(){
+        
     }
 
-    public Avatar(String avatar_name, String avatar_img, int avatar_price) {
-        this.avatar_name = avatar_name;
-        this.avatar_img = avatar_img;
-        this.avatar_price = avatar_price;
+    public Avatar(int id, int price, String name, String img) {
+        this.id = id;
+        this.price = price;
+        this.name = name;
+        this.img = img;
     }
 
-    public int getAvatar_id() {
-        return avatar_id;
+    public int getId() {
+        return id;
     }
 
-    public void setAvatar_id(int avatar_id) {
-        this.avatar_id = avatar_id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getAvatar_name() {
-        return avatar_name;
+    public int getPrice() {
+        return price;
     }
 
-    public void setAvatar_name(String avatar_name) {
-        this.avatar_name = avatar_name;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
-    public String getAvatar_img() {
-        return avatar_img;
+    public String getName() {
+        return name;
     }
 
-    public void setAvatar_img(String avatar_img) {
-        this.avatar_img = avatar_img;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getAvatar_price() {
-        return avatar_price;
+    public String getImg() {
+        return img;
     }
 
-    public void setAvatar_price(int avatar_price) {
-        this.avatar_price = avatar_price;
+    public void setImg(String img) {
+        this.img = img;
     }
 }

@@ -8,74 +8,72 @@ import be.ehb.restservermetdatabase.model.Barcode;
 public class BarcodeDao {
 
     public static ArrayList<Barcode> getBarcode() {
-        ArrayList<Barcode> resultaat = new ArrayList<Barcode>();
+        ArrayList<Barcode> result = new ArrayList<Barcode>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from barcodes");
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    Barcode huidigeScore = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeScore);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from barcodes");
+            if (results != null) {
+                while (results.next()) {
+                    Barcode current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static Barcode getBarcodeById(int id) {
-        Barcode resultaat = null;
+        Barcode result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from barcodes where barcode_id = ?", new Object[]{id});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from barcodes where barcode_id = ?", new Object[]{id});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
-    public static int voegBarcodeToe(Barcode nieuweBarcode) {
-        int aantalAangepasteRijen = 0;
+    public static int addBarcode(Barcode b) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("INSERT INTO barcodes ( barcode_rawdata, user_id, barcode_date ) VALUES (?,?,?)", new Object[]{nieuweBarcode.getBarcode_rawdata(), nieuweBarcode.getUser_id(), nieuweBarcode.getBarcode_date()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO barcodes ( barcode_rawdata, user_id, barcode_date ) VALUES (?,?,?)", new Object[]{b.getRawdata(), b.getUserId(), b.getDate()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int updateBarcode(Barcode nieuweBarcode) {
-        int aantalAangepasteRijen = 0;
+    public static int updateBarcode(Barcode b) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE barcodes SET barcode_rawdata = ?, user_id = ?, barcode_date = ? where barcode_id = ?", new Object[]{nieuweBarcode.getBarcode_rawdata(), nieuweBarcode.getUser_id(), nieuweBarcode.getBarcode_date(), nieuweBarcode.getBarcode_id()});
+            changedRows = Database.execSqlAndReturnChangedRows("UPDATE barcodes SET barcode_rawdata = ?, user_id = ?, barcode_date = ? where barcode_id = ?", new Object[]{b.getRawdata(), b.getUserId(), b.getDate(), b.getBarcodeId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int verwijderScore(int barcodeId) {
-        int aantalAangepasteRijen = 0;
+    public static int deleteBarcode(int id) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM barcodes WHERE barcode_id = ?", new Object[]{barcodeId});
+            changedRows = Database.execSqlAndReturnChangedRows("DELETE FROM barcodes WHERE barcode_id = ?", new Object[]{id});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    private static Barcode converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new Barcode(mijnResultset.getInt("barcode_id"), mijnResultset.getInt("user_id"), mijnResultset.getString("barcode_rawdata"), mijnResultset.getDate("barcode_date"));
+    private static Barcode convertRowToObject(ResultSet row) throws SQLException {
+        return new Barcode(row.getInt("barcode_id"), row.getInt("user_id"), row.getString("barcode_rawdata"), row.getDate("barcode_date"));
     }
 
 }

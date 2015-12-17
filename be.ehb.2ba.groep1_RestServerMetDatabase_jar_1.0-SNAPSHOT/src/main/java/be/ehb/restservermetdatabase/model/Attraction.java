@@ -14,6 +14,10 @@ public class Attraction {
     private int id, queuetime;
     private String name, description, img;
     private float lat, lon;
+    
+    public Attraction(){
+        
+    }
 
     public Attraction(int id, int queuetime, String name, String description, String img, float lat, float lon) {
         this.id = id;

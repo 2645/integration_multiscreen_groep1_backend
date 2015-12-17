@@ -8,90 +8,87 @@ import be.ehb.restservermetdatabase.model.Game;
 public class GameDao {
 
     public static ArrayList<Game> getGames() {
-        ArrayList<Game> resultaat = new ArrayList<Game>();
+        ArrayList<Game> result = new ArrayList<Game>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from games");
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    Game huidigeAvatar = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeAvatar);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from games");
+            if (results != null) {
+                while (results.next()) {
+                    Game current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static Game getGameById(int id) {
-        Game resultaat = null;
+        Game result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from games where game_id = ?", new Object[]{id});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from games where game_id = ?", new Object[]{id});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
     
     public static Game getGameByName(String name) {
-        Game resultaat = null;
+        Game result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from games WHERE game_name = ?", new Object[]{name});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from games WHERE game_name = ?", new Object[]{name});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
-    public static int voegGameToe(Game nieuweGame) {
-        int aantalAangepasteRijen = 0;
+    public static int addGame(Game g) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("INSERT INTO games ( game_name, game_description ) VALUES (?,?)", new Object[]{nieuweGame.getGame_name(), nieuweGame.getGame_description()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO games ( game_name, game_description ) VALUES (?,?)", new Object[]{g.getName(), g.getDescription()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int updateGame(Game nieuweGame) {
-        int aantalAangepasteRijen = 0;
+    public static int updateGame(Game g) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE games SET game_name = ?, game_description = ? WHERE game_id = ?", new Object[]{nieuweGame.getGame_name(), nieuweGame.getGame_description(), nieuweGame.getGame_id()});
+            changedRows = Database.execSqlAndReturnChangedRows("UPDATE games SET game_name = ?, game_description = ? WHERE game_id = ?", new Object[]{g.getName(), g.getDescription(), g.getId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int verwijderGame(int gameId) {
-        int aantalAangepasteRijen = 0;
+    public static int deleteGame(int id) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM games WHERE game_id = ?", new Object[]{gameId});
+            changedRows = Database.execSqlAndReturnChangedRows("DELETE FROM games WHERE game_id = ?", new Object[]{id});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    private static Game converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new Game(mijnResultset.getInt("game_id"), mijnResultset.getString("game_name"),  mijnResultset.getString("game_description"));
+    private static Game convertRowToObject(ResultSet row) throws SQLException {
+        return new Game(row.getInt("game_id"), row.getString("game_name"),  row.getString("game_description"));
     }
 
 }

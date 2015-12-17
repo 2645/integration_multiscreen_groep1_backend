@@ -12,6 +12,10 @@ package be.ehb.restservermetdatabase.model;
 public class Achievement {
     private int id,  listOrder;
     private String  googleId, name, description, icon;
+    
+    public Achievement(){
+        
+    }
 
     public Achievement(int id, int listOrder, String googleId, String name, String description, String icon) {
         this.id = id;

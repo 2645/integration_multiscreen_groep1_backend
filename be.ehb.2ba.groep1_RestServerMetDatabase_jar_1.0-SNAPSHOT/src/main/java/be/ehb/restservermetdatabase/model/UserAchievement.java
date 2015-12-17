@@ -11,6 +11,10 @@ package be.ehb.restservermetdatabase.model;
  */
 public class UserAchievement {
     private int userId, achievementId;
+    
+    public UserAchievement(){
+        
+    }
 
     public UserAchievement(int userId, int achievementId) {
         this.userId = userId;
