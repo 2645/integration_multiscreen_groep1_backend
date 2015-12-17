@@ -10,27 +10,33 @@ package be.ehb.restservermetdatabase.model;
  * @author janhd
  */
 public class UserAvatar {
-    public int user_id, avatar_id;
+    private int userId, avatarId;
 
-    public UserAvatar(int user_id, int avatar_id) {
-        this.user_id = user_id;
-        this.avatar_id = avatar_id;
+    public UserAvatar(){
+        
+    }
+    
+    public UserAvatar(int userId, int avatarId) {
+        this.userId = userId;
+        this.avatarId = avatarId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getAvatar_id() {
-        return avatar_id;
+    public int getAvatarId() {
+        return avatarId;
     }
 
-    public void setAvatar_id(int avatar_id) {
-        this.avatar_id = avatar_id;
+    public void setAvatarId(int avatarId) {
+        this.avatarId = avatarId;
     }
+
+    
     
 }

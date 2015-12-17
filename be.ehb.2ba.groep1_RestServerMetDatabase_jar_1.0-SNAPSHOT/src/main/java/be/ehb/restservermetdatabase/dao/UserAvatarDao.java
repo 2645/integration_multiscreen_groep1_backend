@@ -8,50 +8,48 @@ import be.ehb.restservermetdatabase.model.UserAvatar;
 public class UserAvatarDao {
 
     public static ArrayList<UserAvatar> getUserAvatars() {
-        ArrayList<UserAvatar> resultaat = new ArrayList<UserAvatar>();
+        ArrayList<UserAvatar> result = new ArrayList<UserAvatar>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from usersavatar");
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    UserAvatar huidigeUserAvatar = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeUserAvatar);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from usersavatar");
+            if (results != null) {
+                while (results.next()) {
+                    UserAvatar current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static ArrayList<UserAvatar> getUserAvatarById(int id) {
-        ArrayList<UserAvatar> resultaat = new ArrayList<UserAvatar>();
+        ArrayList<UserAvatar> result = new ArrayList<UserAvatar>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from usersavatar where user_id = ?", new Object[]{id});
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    UserAvatar huidigeUserAvatar = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeUserAvatar);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from usersavatar where user_id = ?", new Object[]{id});
+            if (results != null) {
+                while (results.next()) {
+                    UserAvatar current = converteerHuidigeRijNaarObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
-    public static int voegUserAvatarToe(UserAvatar nieuweUserAvatar) {
-        int aantalAangepasteRijen = 0;
+    public static int addUserAvatar(UserAvatar u) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("INSERT INTO usersavatar ( user_id, avatar_id ) VALUES (?,?)", new Object[]{nieuweUserAvatar.getUser_id(), nieuweUserAvatar.getAvatar_id()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO usersavatar ( user_id, avatar_id ) VALUES (?,?)", new Object[]{u.getUserId(), u.getAvatarId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
     public static int verwijderUsersAvatar(int userId, int avatarId) {

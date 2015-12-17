@@ -8,80 +8,74 @@ import be.ehb.restservermetdatabase.model.User;
 public class UserDao {
 
     public static ArrayList<User> getUsers() {
-        ArrayList<User> resultaat = new ArrayList<User>();
+        ArrayList<User> result = new ArrayList<User>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users");
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    User huidigeUser = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeUser);
-                }
+            ResultSet results = Database.execSqlAndReturn("SELECT * from users");
+            if (results.next()) {
+                User current = convertRowToObject(results);
+                result.add(current);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static User getUserById(int id) {
-        User resultaat = null;
+        User result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users where user_id = ?", new Object[]{id});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from users where user_id = ?", new Object[]{id});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static User getUserByEmail(String mail) {
-        User resultaat = null;
+        User result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users where user_mail = ?", new Object[]{mail});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from users where user_mail = ?", new Object[]{mail});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static ArrayList<User> getUsersByFirstname(String fname) {
         ArrayList<User> result = new ArrayList<User>();
         try {
-            ResultSet results = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users where user_firstname = ?", new Object[]{fname});
+            ResultSet results = Database.execSqlAndReturn("SELECT * from users where user_firstname = ?", new Object[]{fname});
             if (results != null) {
                 while (results.next()) {
-                    User huidigeUser = converteerHuidigeRijNaarObject(results);
-                    result.add(huidigeUser);
+                    User current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        System.out.println(result);
         return result;
     }
 
     public static ArrayList<User> getUsersByLastname(String lname) {
         ArrayList<User> result = new ArrayList<User>();
         try {
-            ResultSet results = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users where user_lastname = ?", new Object[]{lname});
+            ResultSet results = Database.execSqlAndReturn("SELECT * from users where user_lastname = ?", new Object[]{lname});
             if (results != null) {
                 while (results.next()) {
-                    User huidigeUser = converteerHuidigeRijNaarObject(results);
-                    result.add(huidigeUser);
+                    User current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
@@ -93,11 +87,11 @@ public class UserDao {
     public static ArrayList<User> getUsersByFirstAndLastname(String fname, String lname) {
         ArrayList<User> result = new ArrayList<User>();
         try {
-            ResultSet results = Database.voerSqlUitEnHaalResultaatOp("SELECT * from users where user_firstname = ? AND user_lastname = ?", new Object[]{fname, lname});
+            ResultSet results = Database.execSqlAndReturn("SELECT * from users where user_firstname = ? AND user_lastname = ?", new Object[]{fname, lname});
             if (results != null) {
                 while (results.next()) {
-                    User huidigeUser = converteerHuidigeRijNaarObject(results);
-                    result.add(huidigeUser);
+                    User current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
@@ -106,41 +100,41 @@ public class UserDao {
         return result;
     }
 
-    public static int voegUserToe(User nieuweUser) {
-        int aantalAangepasteRijen = 0;
+    public static int addUser(User u) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("INSERT INTO users ( user_firstname, user_lastname, user_mail, user_password, user_balance, user_currentavatar_id) VALUES (?,?,?,?,?,?)", new Object[]{nieuweUser.getUser_firstname(), nieuweUser.getUser_lastname(), nieuweUser.getUser_mail(), nieuweUser.getUser_password(), nieuweUser.getUser_balance(), nieuweUser.getUser_currentavatar_id()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO users ( user_firstname, user_lastname, user_mail, user_password, user_balance, user_currentavatar_id) VALUES (?,?,?,?,?,?)", new Object[]{u.getFname(), u.getLname(), u.getMail(), u.getPw(), u.getBalance(), u.getAvatarId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int updateUser(User nieuweUser) {
-        int aantalAangepasteRijen = 0;
+    public static int updateUser(User u) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE users SET user_firstname = ?, user_lastname = ?, user_mail = ?, user_password = ?, user_balance = ?, user_currentavatar_id = ? WHERE user_id = ?", new Object[]{nieuweUser.getUser_firstname(), nieuweUser.getUser_lastname(), nieuweUser.getUser_mail(), nieuweUser.getUser_password(), nieuweUser.getUser_balance(), nieuweUser.getUser_currentavatar_id(), nieuweUser.getUser_id()});
+            changedRows = Database.execSqlAndReturnChangedRows("UPDATE users SET user_firstname = ?, user_lastname = ?, user_mail = ?, user_password = ?, user_balance = ?, user_currentavatar_id = ? WHERE user_id = ?", new Object[]{u.getFname(), u.getLname(), u.getMail(), u.getPw(), u.getBalance(), u.getAvatarId(), u.getId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int verwijderUser(int userId) {
-        int aantalAangepasteRijen = 0;
+    public static int deleteUser(int id) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM users WHERE user_id = ?", new Object[]{userId});
+            changedRows = Database.execSqlAndReturnChangedRows("DELETE FROM users WHERE user_id = ?", new Object[]{id});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    private static User converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new User(mijnResultset.getInt("user_id"), mijnResultset.getInt("user_balance"), mijnResultset.getInt("user_currentavatar_id"), mijnResultset.getString("user_firstname"), mijnResultset.getString("user_lastname"), mijnResultset.getString("user_mail"), mijnResultset.getString("user_password"));
+    private static User convertRowToObject(ResultSet row) throws SQLException {
+        return new User(row.getInt("user_id"), row.getInt("user_balance"), row.getInt("user_currentavatar_id"), row.getString("user_firstname"), row.getString("user_lastname"), row.getString("user_mail"), row.getString("user_password"));
     }
 
 }
