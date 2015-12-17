@@ -12,57 +12,58 @@ import java.sql.Date;
  * @author janhd
  */
 public class Score {
-    public int score_id, game_id, user_id, score_value;
-    public java.sql.Date score_date;
-
-    public Score(int score_id, int game_id, int user_id, int score_value, Date score_date) {
-        this.score_id = score_id;
-        this.game_id = game_id;
-        this.user_id = user_id;
-        this.score_value = score_value;
-        this.score_date = score_date;
-    }
-
-    public int getScore_id() {
-        return score_id;
-    }
-
-    public void setScore_id(int score_id) {
-        this.score_id = score_id;
-    }
-
-    public int getGame_id() {
-        return game_id;
-    }
-
-    public void setGame_id(int game_id) {
-        this.game_id = game_id;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public int getScore_value() {
-        return score_value;
-    }
-
-    public void setScore_value(int score_value) {
-        this.score_value = score_value;
-    }
-
-    public Date getScore_date() {
-        return score_date;
-    }
-
-    public void setScore_date(Date score_date) {
-        this.score_date = score_date;
-    }
+    public int id, gameId, userId, score;
+    public java.sql.Date date;
     
-    
-    
+    public Score(){
+        
+    }   
+
+    public Score(int id, int gameId, int userId, int score, Date date) {
+        this.id = id;
+        this.gameId = gameId;
+        this.userId = userId;
+        this.score = score;
+        this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }
