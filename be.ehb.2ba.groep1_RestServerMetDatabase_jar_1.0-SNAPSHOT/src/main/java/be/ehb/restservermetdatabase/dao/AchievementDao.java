@@ -8,74 +8,72 @@ import be.ehb.restservermetdatabase.model.Achievement;
 public class AchievementDao {
 
     public static ArrayList<Achievement> getAchievements() {
-        ArrayList<Achievement> resultaat = new ArrayList<Achievement>();
+        ArrayList<Achievement> result = new ArrayList<Achievement>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from achievements");
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    Achievement huidigeAchievement = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeAchievement);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from achievements");
+            if (results != null) {
+                while (results.next()) {
+                    Achievement current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static Achievement getAchievementById(int id) {
-        Achievement resultaat = null;
+        Achievement result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from achievements where achievement_id = ?", new Object[]{id});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from achievements where achievement_id = ?", new Object[]{id});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
-    public static int voegAchievementToe(Achievement nieuweAchievement) {
-        int aantalAangepasteRijen = 0;
+    public static int addAchievement(Achievement a) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("INSERT INTO achievements ( achievement_google_id, achievement_name, achievement_description, achievement_icon, achievement_list_order ) VALUES (?,?,?,?,?)", new Object[]{nieuweAchievement.getAchievement_google_id(), nieuweAchievement.getAchievement_name(), nieuweAchievement.getAchievement_description(), nieuweAchievement.getAchievement_icon(), nieuweAchievement.getAchievement_list_order()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO achievements ( achievement_google_id, achievement_name, achievement_description, achievement_icon, achievement_list_order ) VALUES (?,?,?,?,?)", new Object[]{a.getGoogleId(), a.getName(), a.getDescription(), a.getIcon(), a.getListOrder()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int updateAchievement(Achievement nieuweAchievement) {
-        int aantalAangepasteRijen = 0;
+    public static int updateAchievement(Achievement a) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE achievements SET achievement_google_id = ?, achievement_name = ?, achievement_description = ?, achievement_icon = ? , achievement_list_order = ? WHERE achievement_id = ?", new Object[]{nieuweAchievement.getAchievement_google_id(), nieuweAchievement.getAchievement_name(), nieuweAchievement.getAchievement_description(), nieuweAchievement.getAchievement_icon(), nieuweAchievement.getAchievement_list_order(), nieuweAchievement.getAchievement_id()});
+            changedRows = Database.execSqlAndReturnChangedRows("UPDATE achievements SET achievement_google_id = ?, achievement_name = ?, achievement_description = ?, achievement_icon = ? , achievement_list_order = ? WHERE achievement_id = ?", new Object[]{a.getGoogleId(), a.getName(), a.getDescription(), a.getIcon(), a.getListOrder(), a.getId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int verwijderAchievement(int achievementId) {
-        int aantalAangepasteRijen = 0;
+    public static int deleteAchievement(int id) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM achievements WHERE achievement_id = ?", new Object[]{achievementId});
+            changedRows = Database.execSqlAndReturnChangedRows("DELETE FROM achievements WHERE achievement_id = ?", new Object[]{id});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    static Achievement converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new Achievement(mijnResultset.getInt("achievement_id"), mijnResultset.getInt("achievement_list_order"), mijnResultset.getString("achievement_google_id"), mijnResultset.getString("achievement_name"), mijnResultset.getString("achievement_description"), mijnResultset.getString("achievement_icon"));
+    static Achievement convertRowToObject(ResultSet row) throws SQLException {
+        return new Achievement(row.getInt("achievement_id"), row.getInt("achievement_list_order"), row.getString("achievement_google_id"), row.getString("achievement_name"), row.getString("achievement_description"), row.getString("achievement_icon"));
     }
 
 }

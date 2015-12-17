@@ -8,129 +8,121 @@ import be.ehb.restservermetdatabase.model.Avatar;
 public class AvatarDao {
 
     public static ArrayList<Avatar> getAvatars() {
-        ArrayList<Avatar> resultaat = new ArrayList<>();
+        ArrayList<Avatar> result = new ArrayList<>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from avatars");
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    Avatar huidigeAvatar = converteerHuidigeRijNaarObject(mijnResultset);
-                    resultaat.add(huidigeAvatar);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from avatars");
+            if (results != null) {
+                while (results.next()) {
+                    Avatar current = convertRowToObject(results);
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
     
-    public static ArrayList<Avatar> getAvatarsByUser(int user_id) {
-        ArrayList<Avatar> resultaat = new ArrayList<>();
+    public static ArrayList<Avatar> getAvatarsByUser(int id) {
+        ArrayList<Avatar> result = new ArrayList<Avatar>();
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from usersavatars WHERE user_id = ?", new Object[]{user_id});
-            if (mijnResultset != null) {
-                while (mijnResultset.next()) {
-                    Avatar huidigeAvatar = AvatarDao.getAvatarById(mijnResultset.getInt("avatar_id"));
-                    resultaat.add(huidigeAvatar);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from usersavatars WHERE user_id = ?", new Object[]{id});
+            if (results != null) {
+                while (results.next()) {
+                    Avatar current = AvatarDao.getAvatarById(results.getInt("avatar_id"));
+                    result.add(current);
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static Avatar getAvatarById(int id) {
-        Avatar resultaat = null;
+        Avatar result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from avatars where avatar_id = ?", new Object[]{id});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from avatars where avatar_id = ?", new Object[]{id});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-
-        return resultaat;
+        return result;
     }
 
     public static Avatar getAvatarByName(String name) {
-        Avatar resultaat = null;
+        Avatar result = null;
         try {
-            ResultSet mijnResultset = Database.voerSqlUitEnHaalResultaatOp("SELECT * from avatars where avatar_name = ?", new Object[]{name});
-            if (mijnResultset != null) {
-                mijnResultset.first();
-                resultaat = converteerHuidigeRijNaarObject(mijnResultset);
+            ResultSet results = Database.execSqlAndReturn("SELECT * from avatars where avatar_name = ?", new Object[]{name});
+            if (results != null) {
+                results.first();
+                result = convertRowToObject(results);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
 
-        return resultaat;
+        return result;
     }
 
-    public static int voegAvatarToe(Avatar nieuweAvatar) {
-        int aantalAangepasteRijen = 0;
+    public static int addAvatar(Avatar a) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("INSERT INTO avatars ( avatar_name, avatar_img, avatar_price ) VALUES (?,?,?)", new Object[]{nieuweAvatar.getAvatar_name(), nieuweAvatar.getAvatar_img(), nieuweAvatar.getAvatar_price()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO avatars ( avatar_name, avatar_img, avatar_price ) VALUES (?,?,?)", new Object[]{a.getName(), a.getImg(), a.getPrice()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    public static int updateAvatar(Avatar nieuweAvatar) {
-        int aantalAangepasteRijen = 0;
-        int avatar_id = nieuweAvatar.getAvatar_id();
-        
-        if(avatar_id == 0) {
-            return 0;
-            
+    public static int updateAvatar(Avatar a) {
+        int changedRows = 0;
+        int id = a.getId();        
+        if(id == 0) {
+            return 0;            
         } else {
-            if(nieuweAvatar.getAvatar_img().equals("")) {
-                nieuweAvatar.setAvatar_img(AvatarDao.getAvatarById(avatar_id).getAvatar_img());
+            if(a.getImg().equals("")) {
+                a.setImg(AvatarDao.getAvatarById(id).getImg());
             }
             
-            if(nieuweAvatar.getAvatar_name().equals("")) {
-                nieuweAvatar.setAvatar_name(AvatarDao.getAvatarById(avatar_id).getAvatar_name());
+            if(a.getName().equals("")) {
+                a.setName(AvatarDao.getAvatarById(id).getName());
+            }            
+            if(a.getPrice() == 0) {
+                a.setPrice(AvatarDao.getAvatarById(id).getPrice());
             }
-            
-            if(nieuweAvatar.getAvatar_price() == 0) {
-                nieuweAvatar.setAvatar_price(AvatarDao.getAvatarById(avatar_id).getAvatar_price());
-            }
-        }
-        
+        }        
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("UPDATE avatars SET avatar_name = ?, avatar_img = ?, avatar_price = ? WHERE avatar_id = ?", new Object[]{nieuweAvatar.getAvatar_name(), nieuweAvatar.getAvatar_img(), nieuweAvatar.getAvatar_price(), avatar_id});
+            changedRows = Database.execSqlAndReturnChangedRows("UPDATE avatars SET avatar_name = ?, avatar_img = ?, avatar_price = ? WHERE avatar_id = ?", new Object[]{a.getName(), a.getImg(), a.getPrice(), id});
         
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
-        }
-        
-        return aantalAangepasteRijen;
+        }        
+        return changedRows;
     }
 
-    public static int verwijderAvatar(int avatarId) {
-        int aantalAangepasteRijen = 0;
+    public static int deleteAvatar(int id) {
+        int changedRows = 0;
         try {
-            aantalAangepasteRijen = Database.voerSqlUitEnHaalAantalAangepasteRijenOp("DELETE FROM avatars WHERE avatar_id = ?", new Object[]{avatarId});
+            changedRows = Database.execSqlAndReturnChangedRows("DELETE FROM avatars WHERE avatar_id = ?", new Object[]{id});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
         }
-        return aantalAangepasteRijen;
+        return changedRows;
     }
 
-    private static Avatar converteerHuidigeRijNaarObject(ResultSet mijnResultset) throws SQLException {
-        return new Avatar(mijnResultset.getInt("avatar_id"), mijnResultset.getString("avatar_name"),  mijnResultset.getString("avatar_img"),  mijnResultset.getInt("avatar_price"));
+    private static Avatar convertRowToObject(ResultSet row) throws SQLException {
+        return new Avatar(row.getInt("avatar_id"),  row.getInt("avatar_price"), row.getString("avatar_name"),  row.getString("avatar_img"));
     }
 
 }
