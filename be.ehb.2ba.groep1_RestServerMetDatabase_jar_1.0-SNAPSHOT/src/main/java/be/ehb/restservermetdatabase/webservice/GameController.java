@@ -49,9 +49,10 @@ public class GameController {
     @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
             @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "description", defaultValue = "0") String description
-    ) {
-        GameDao.addGame(new Game(0, name, description));
+            @RequestParam(value = "description", defaultValue = "0") String description,
+            @RequestParam(value = "icon", defaultValue = "") String icon
+    ) {       
+        GameDao.addGame(new Game(0, name, description, icon));
         return GameDao.getGameByName(name).getId();
     }
 
@@ -59,9 +60,10 @@ public class GameController {
     public int update(
             @RequestParam(value = "id", defaultValue = "0") int id,
             @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "description", defaultValue = "0") String description
+            @RequestParam(value = "description", defaultValue = "0") String description,
+            @RequestParam(value = "icon", defaultValue = "") String icon
     ) {
-        GameDao.updateGame(new Game(id, name, description));
+        GameDao.updateGame(new Game(id, name, description, icon));
         return GameDao.getGameByName(name).getId();
     }
 }
