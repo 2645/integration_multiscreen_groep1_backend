@@ -98,6 +98,10 @@ public class GameController {
 
     public String getImg(String url) {
         BufferedImage img = null;
+        File f = new File(url);
+        if(f == null){
+            f = new File("unnamed.png");
+        }
         try {
             img = ImageIO.read(new File(url));
         } catch (IOException e) {
