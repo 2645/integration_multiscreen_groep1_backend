@@ -7,6 +7,8 @@ package be.ehb.restservermetdatabase.webservice;
 
 import be.ehb.restservermetdatabase.dao.GameDao;
 import be.ehb.restservermetdatabase.model.Game;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,14 +18,17 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
+import sun.misc.BASE64Encoder;
 
 /**
  * @author Dieter
@@ -46,39 +51,39 @@ public class GameController {
         if (game_id == 0) {
             return null;
         } else {
-            return GameDao.getGameById(game_id);
+            Game g = GameDao.getGameById(game_id);
+            g.setIcon(getImg(g.getIcon()));
+            return g;
         }
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Game> list() {
+        for(Game g : GameDao.getGames()){
+            g.setIcon(getImg(g.getIcon()));
+        }
         return GameDao.getGames();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
-            @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "description", defaultValue = "0") String description,
-            @RequestParam(value = "icon", defaultValue = "") String icon
+            @RequestBody Game g
     ) {
-        String url = setimg(icon, "game_" + name);
-        GameDao.addGame(new Game(0, name, description, url));
-        return GameDao.getGameByName(name).getId();
+        g.setIcon(setImg(g.getIcon(),g.getName()));
+        GameDao.addGame(g);
+        return GameDao.getGameByName(g.getName()).getId();
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int update(
-            @RequestParam(value = "id", defaultValue = "0") int id,
-            @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "description", defaultValue = "0") String description,
-            @RequestParam(value = "icon", defaultValue = "") String icon
+            @RequestBody Game g
     ) {
-        String url = setimg(icon, "game_" + name);
-        GameDao.updateGame(new Game(id, name, description, url));
-        return GameDao.getGameByName(name).getId();
+        g.setIcon(setImg(g.getIcon(),g.getName()));
+        GameDao.updateGame(g);
+        return GameDao.getGameByName(g.getName()).getId();
     }
 
-    public String setimg(String img, String name) {
+    public String setImg(String img, String name) {
         try {
             byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(img.split(",")[1]);
             File of = new File("game_" + name + ".png");
@@ -86,10 +91,29 @@ public class GameController {
             osf.write(btDataFile);
             osf.flush();
             osf.close();
-            return of.getAbsolutePath();
+            return of.getPath();
         } catch (IOException ex) {
             Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public String getImg(String url) {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(url));
+        } catch (IOException e) {
+        }
+        String imageString = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(img, "png", bos);
+            byte[] imageBytes = bos.toByteArray();            
+            imageString = new sun.misc.BASE64Encoder().encode(imageBytes);
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageString;
     }
 }
