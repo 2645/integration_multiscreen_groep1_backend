@@ -11,16 +11,17 @@ package be.ehb.restservermetdatabase.model;
  */
 public class Game {
     private int id;
-    private String name, description;
+    private String name, description, icon;
 
     public Game(){
         
     }
     
-    public Game(int id, String name, String description) {
+    public Game(int id, String name, String description, String icon) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.icon = icon;
     }
 
     public int getId() {
@@ -46,4 +47,14 @@ public class Game {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    
+    
 }

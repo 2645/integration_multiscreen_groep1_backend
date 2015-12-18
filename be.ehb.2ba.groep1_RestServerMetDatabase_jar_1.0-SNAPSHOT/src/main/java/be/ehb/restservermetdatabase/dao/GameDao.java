@@ -57,7 +57,7 @@ public class GameDao {
     public static int addGame(Game g) {
         int changedRows = 0;
         try {
-            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO games ( game_name, game_description ) VALUES (?,?)", new Object[]{g.getName(), g.getDescription()});
+            changedRows = Database.execSqlAndReturnChangedRows("INSERT INTO games ( game_name, game_description, game_icon ) VALUES (?,?,?)", new Object[]{g.getName(), g.getDescription(), g.getIcon()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
@@ -68,7 +68,7 @@ public class GameDao {
     public static int updateGame(Game g) {
         int changedRows = 0;
         try {
-            changedRows = Database.execSqlAndReturnChangedRows("UPDATE games SET game_name = ?, game_description = ? WHERE game_id = ?", new Object[]{g.getName(), g.getDescription(), g.getId()});
+            changedRows = Database.execSqlAndReturnChangedRows("UPDATE games SET game_name = ?, game_description = ?, game_icon = ? WHERE game_id = ?", new Object[]{g.getName(), g.getDescription(), g.getIcon(), g.getId()});
         } catch (SQLException ex) {
             ex.printStackTrace();
             // Foutafhandeling naar keuze
@@ -88,7 +88,7 @@ public class GameDao {
     }
 
     private static Game convertRowToObject(ResultSet row) throws SQLException {
-        return new Game(row.getInt("game_id"), row.getString("game_name"),  row.getString("game_description"));
+        return new Game(row.getInt("game_id"), row.getString("game_name"),  row.getString("game_description"), row.getString("game_icon"));
     }
 
 }
