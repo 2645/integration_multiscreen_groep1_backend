@@ -7,14 +7,7 @@ package be.ehb.restservermetdatabase.webservice;
 
 import be.ehb.restservermetdatabase.dao.GameDao;
 import be.ehb.restservermetdatabase.model.Game;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,9 +51,8 @@ public class GameController {
             @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "description", defaultValue = "0") String description,
             @RequestParam(value = "icon", defaultValue = "") String icon
-    ) {
-        String url = convertImgToUrl(icon, name);
-        GameDao.addGame(new Game(0, name, description, url));
+    ) {       
+        GameDao.addGame(new Game(0, name, description, icon));
         return GameDao.getGameByName(name).getId();
     }
 
@@ -71,31 +63,7 @@ public class GameController {
             @RequestParam(value = "description", defaultValue = "0") String description,
             @RequestParam(value = "icon", defaultValue = "") String icon
     ) {
-        String url = convertImgToUrl(icon, name);
         GameDao.updateGame(new Game(id, name, description, icon));
         return GameDao.getGameByName(name).getId();
-    }
-
-    public String convertImgToUrl(String base64Data, String name) {
-        String base64Image = base64Data.split(",")[1];
-        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(new ByteArrayInputStream(imageBytes));
-        } catch (IOException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return saveImageAndReturnUrl(img, name);
-    }
-
-    public String saveImageAndReturnUrl(BufferedImage img, String name) {
-        File file = new File(name + "." + "png");
-        try {
-            ImageIO.write(img, "png", file);  // ignore returned boolean
-        } catch (IOException e) {
-            System.out.println("Write error for " + file.getPath()
-                    + ": " + e.getMessage());
-        }
-        return file.getPath();
     }
 }
