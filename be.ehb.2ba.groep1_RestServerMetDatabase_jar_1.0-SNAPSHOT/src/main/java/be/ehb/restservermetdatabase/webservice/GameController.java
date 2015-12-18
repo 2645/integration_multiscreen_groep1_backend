@@ -7,7 +7,14 @@ package be.ehb.restservermetdatabase.webservice;
 
 import be.ehb.restservermetdatabase.dao.GameDao;
 import be.ehb.restservermetdatabase.model.Game;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +58,7 @@ public class GameController {
             @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "description", defaultValue = "0") String description,
             @RequestParam(value = "icon", defaultValue = "") String icon
-    ) {       
+    ) {
         GameDao.addGame(new Game(0, name, description, icon));
         return GameDao.getGameByName(name).getId();
     }
@@ -65,5 +72,25 @@ public class GameController {
     ) {
         GameDao.updateGame(new Game(id, name, description, icon));
         return GameDao.getGameByName(name).getId();
+    }
+
+    @RequestMapping(value = "testing", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String testing(
+            @RequestParam(value = "test", defaultValue = "") String s
+    ) throws IOException {
+        byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(s);
+        File of = new File("test.png");
+        FileOutputStream osf = new FileOutputStream(of);
+        osf.write(btDataFile);
+        osf.flush();
+        osf.close();
+        return "";
+    }
+
+    @RequestMapping(value = "getimg", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getImg(
+            @RequestParam(value = "name", defaultValue = "") String name
+    ) {
+        return new File(name + ".png").getAbsolutePath();
     }
 }
