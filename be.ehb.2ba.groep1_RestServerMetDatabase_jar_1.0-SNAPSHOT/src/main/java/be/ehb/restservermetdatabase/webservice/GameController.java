@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,44 +55,41 @@ public class GameController {
         return GameDao.getGames();
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
             @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "description", defaultValue = "0") String description,
             @RequestParam(value = "icon", defaultValue = "") String icon
     ) {
-        GameDao.addGame(new Game(0, name, description, icon));
+        String url = setimg(icon, "game_" + name);
+        GameDao.addGame(new Game(0, name, description, url));
         return GameDao.getGameByName(name).getId();
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int update(
             @RequestParam(value = "id", defaultValue = "0") int id,
             @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "description", defaultValue = "0") String description,
             @RequestParam(value = "icon", defaultValue = "") String icon
     ) {
-        GameDao.updateGame(new Game(id, name, description, icon));
+        String url = setimg(icon, "game_" + name);
+        GameDao.updateGame(new Game(id, name, description, url));
         return GameDao.getGameByName(name).getId();
     }
 
-    @RequestMapping(value = "testing", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String testing(
-            @RequestParam(value = "test", defaultValue = "") String s
-    ) throws IOException {
-        byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(s);
-        File of = new File("test.png");
-        FileOutputStream osf = new FileOutputStream(of);
-        osf.write(btDataFile);
-        osf.flush();
-        osf.close();
-        return "";
-    }
-
-    @RequestMapping(value = "getimg", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getImg(
-            @RequestParam(value = "name", defaultValue = "") String name
-    ) {
-        return new File(name + ".png").getAbsolutePath();
+    public String setimg(String img, String name) {
+        try {
+            byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(img.split(",")[1]);
+            File of = new File("game_" + name + ".png");
+            FileOutputStream osf = new FileOutputStream(of);
+            osf.write(btDataFile);
+            osf.flush();
+            osf.close();
+            return of.getAbsolutePath();
+        } catch (IOException ex) {
+            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }
