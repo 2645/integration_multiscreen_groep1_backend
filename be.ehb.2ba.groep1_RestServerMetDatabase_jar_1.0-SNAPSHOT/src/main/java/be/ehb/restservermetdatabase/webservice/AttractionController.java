@@ -11,9 +11,11 @@ import be.ehb.restservermetdatabase.dao.AttractionDao;
 import be.ehb.restservermetdatabase.model.Attraction;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/attractions")
 public class AttractionController {
     

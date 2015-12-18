@@ -10,9 +10,11 @@ import be.ehb.restservermetdatabase.dao.BarcodeDao;
 import be.ehb.restservermetdatabase.model.Barcode;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/barcode")
 public class BarcodeController {
     
