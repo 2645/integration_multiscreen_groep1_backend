@@ -83,9 +83,10 @@ public class AchievementController {
     }
 
     @RequestMapping(value = "/trigger", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void trigger(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "achievement_id", defaultValue = "0") int achievement_id) {
+    public boolean trigger(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "achievement_id", defaultValue = "0") int achievement_id) {
         // http://localhost:8080/achievements/trigger?user_id=1&achievement_id=1
-        UserAchievementDao.AddUserAchievement(new UserAchievement(user_id, achievement_id));
+        int result = UserAchievementDao.AddUserAchievement(new UserAchievement(user_id, achievement_id));
+        return (result != 0);
     }
 
     public String getImg(String url) {
