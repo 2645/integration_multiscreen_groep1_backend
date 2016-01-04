@@ -72,7 +72,7 @@ public class GameController {
         return GameDao.getGameByName(g.getName()).getId();
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int update(
             @RequestBody Game g
     ) {
