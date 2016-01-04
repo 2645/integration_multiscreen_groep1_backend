@@ -18,9 +18,10 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpRespon
 @CrossOrigin
 @RequestMapping("/users")
 public class UserController {
-    
+
     @ControllerAdvice
     static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+
         public JsonpAdvice() {
             super("callback");
         }
@@ -67,9 +68,9 @@ public class UserController {
         }
         return user;
     }
-    
-    @RequestMapping(value="/update", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User update (@RequestBody User nieuweUser){
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User update(@RequestBody User nieuweUser) {
         UserDao.updateUser(nieuweUser);
         return UserDao.getUserByEmail(nieuweUser.getMail());
     }

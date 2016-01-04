@@ -63,7 +63,7 @@ public class GameController {
         return games;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public int create(
             @RequestBody Game g
     ) {
