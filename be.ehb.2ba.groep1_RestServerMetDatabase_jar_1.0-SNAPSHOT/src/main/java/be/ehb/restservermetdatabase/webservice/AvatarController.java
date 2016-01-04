@@ -91,12 +91,14 @@ public class AvatarController {
 
     public String getImg(String url) {
         BufferedImage img = null;
-        File f = new File(url);
-        if (f == null) {
+        File f = null;
+        try {
+            f = new File(url);
+        } catch (NullPointerException e) {
             f = new File("unnamed.png");
         }
         try {
-            img = ImageIO.read(new File(url));
+            img = ImageIO.read(f);
         } catch (IOException e) {
         }
         String imageString = null;
@@ -109,7 +111,7 @@ public class AvatarController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return imageString;
+        return imageString;    
     }
 
     public String setImg(String img, String name) {
