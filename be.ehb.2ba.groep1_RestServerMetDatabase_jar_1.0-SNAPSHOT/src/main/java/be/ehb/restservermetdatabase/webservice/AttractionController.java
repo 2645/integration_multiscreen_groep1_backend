@@ -69,23 +69,6 @@ public class AttractionController {
         return AttractionDao.getAttractionByName(a.getName());
     }
 
-    @RequestMapping(value = "/queue", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ArrayList<Attraction> queuetime(@RequestParam(value = "attraction_id", defaultValue = "0") int attraction_id) {
-        // http://localhost:8080/attractions/queue?attraction_id=5        
-        ArrayList<Attraction> result = new ArrayList<Attraction>();
-        if (attraction_id > 0) {
-            Attraction a = AttractionDao.getAttractionById(attraction_id);
-            a.setImg(setImg(a.getImg(), a.getName()));
-            result.add(a);
-        } else {
-            result = AttractionDao.getAttractions();
-            for (int i = 0; i < result.size(); i++) {
-                result.get(i).setImg(getImg(result.get(i).getImg()));
-            }
-        }
-        return result;
-    }
-
     @RequestMapping(value = "/updatequeue", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateQueuetime(@RequestParam(value = "attraction_id", defaultValue = "0") int attraction_id, @RequestParam(value = "attraction_queuetime") int attraction_queuetime) {
         // http://localhost:8080/attractions/updatequeue?attraction_id=5&attraction_queuetime=500
