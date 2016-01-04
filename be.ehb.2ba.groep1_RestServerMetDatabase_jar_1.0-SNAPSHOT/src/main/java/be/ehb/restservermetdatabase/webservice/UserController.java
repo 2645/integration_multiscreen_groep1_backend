@@ -28,7 +28,7 @@ public class UserController {
     }
     
       @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ArrayList<User> getById() {
+    public ArrayList<User> list() {
         // Aanroepen met
         // http://localhost:8080/users/list
         return UserDao.getUsers();

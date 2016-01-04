@@ -11,7 +11,7 @@ public class UserDao {
         ArrayList<User> result = new ArrayList<User>();
         try {
             ResultSet results = Database.execSqlAndReturn("SELECT * from users");
-            if (results.next()) {
+            while (results.next()) {
                 User current = convertRowToObject(results);
                 result.add(current);
             }
