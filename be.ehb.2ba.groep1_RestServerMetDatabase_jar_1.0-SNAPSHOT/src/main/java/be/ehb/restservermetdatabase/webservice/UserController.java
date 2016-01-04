@@ -26,6 +26,13 @@ public class UserController {
             super("callback");
         }
     }
+    
+      @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ArrayList<User> getById() {
+        // Aanroepen met
+        // http://localhost:8080/users/list
+        return UserDao.getUsers();
+    }
 
     @RequestMapping(value = "/lookup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User getById(@RequestParam(value = "user_id", defaultValue = "0") int user_id, @RequestParam(value = "email", defaultValue = "") String user_mail) {
